@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <input type="file" id="userFile" />
+    <button id="btnUpload">Upload</button>
+    <br /><br />
+    <span>0%</span>
+
+    <script>
+      let file = document.querySelector("#userFile");
+      let btnUpload = document.querySelector("#btnUpload");
+      btnUpload.addEventListener("click", () => {
+        let userChooseFile = file.files[0];
+        //   read file from disk using FIleReader
+        let fileReader = new FileReader();
+        fileReader.readAsArrayBuffer(userChooseFile);
+        const fileName = new Date().toLocaleDateString() + file.files[0].name;
+        fileReader.onload = (ev) => {
+          const CHUNK_LIMIT = 10000;
+          const TOTAL_CHUNK = ev.target.result.byteLength;
+          const CHUNK_SIZE = TOTAL_CHUNK / CHUNK_LIMIT;
+
+          for (let id = 0; id < CHUNK_SIZE + 1; id++) {
+            const data = ev.target.result.slice(
+              id * CHUNK_LIMIT,
+              id * CHUNK_LIMIT + CHUNK_LIMIT
+            );
+            console.log(data);
+            // send data to server
+            fetch("/send-data", {
+              method: "POST",
+                'headers':{
+                    'file-name' : fileName
+                },
+              body: data,
+            });
+          }
+        };
+        console.log(fileReader);
+      });
+    </script>
+  </body>
+</html>
