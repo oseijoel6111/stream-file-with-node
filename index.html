@@ -19,7 +19,7 @@
         //   read file from disk using FIleReader
         let fileReader = new FileReader();
         fileReader.readAsArrayBuffer(userChooseFile);
-        const fileName = new Date().toLocaleDateString() + file.files[0].name;
+        const fileName = new Date().getTime() + file.files[0].name;
         fileReader.onload = (ev) => {
           const CHUNK_LIMIT = 10000;
           const TOTAL_CHUNK = ev.target.result.byteLength;
@@ -34,9 +34,9 @@
             // send data to server
             fetch("/send-data", {
               method: "POST",
-                'headers':{
-                    'file-name' : fileName
-                },
+              headers: {
+                "file-name": fileName,
+              },
               body: data,
             });
           }

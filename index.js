@@ -10,8 +10,9 @@ const server = http.createServer((req, res) => {
     const userFile = req.headers["file-name"];
     console.log(userFile);
     req.on("data", (chunk) => {
-      fs.appendFileSync('userFile', chunk);
+      fs.appendFileSync(userFile, chunk);
     });
+    res.end()       
   }
 });
 
